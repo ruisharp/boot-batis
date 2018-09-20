@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: MyBatisDemo
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: liurui
+Implementation-Vendor-Id: com.deli
+Build-Jdk: 1.8.0_121
+Implementation-URL: http://projects.spring.io/spring-boot/risk/
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+

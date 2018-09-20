@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.no7player.mapper.UserMapper">
+ 
+  <select id="findUserInfo" resultType="cn.no7player.model.User">
+    select name, age,password from user;
+  </select>
+  
+  	<insert id="batchInsert" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" separator=";" >
+			INSERT INTO taipu_commodity_data_log
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+				<if test="item.schemaName != null and item.schemaName != '' ">schema_name ,</if>
+				<if test="item.tableName != null and item.tableName != '' ">table_name ,</if>
+				<if test="item.content != null and item.content != '' ">content,</if>
+				<if test="item.bussinessId != null and item.bussinessId != '' ">bussiness_id,</if>
+				<if test="item.operatorType != null ">operator_type,</if>
+				<if test="item.createTime != null">create_time,</if>
+				<if test="item.createUserId != null ">create_user_id,</if>
+		   </trim>
+			<trim prefix="values (" suffix=")" suffixOverrides=",">
+				<if test="item.schemaName != null and item.schemaName != '' ">#{item.schemaName} ,</if>
+				<if test="item.tableName != null and item.tableName != '' ">#{item.tableName} ,</if>
+				<if test="item.content != null and item.content != '' ">#{item.content} ,</if>
+				<if test="item.bussinessId != null and item.bussinessId != '' ">#{item.bussinessId} ,</if>
+				<if test="item.operatorType != null ">#{item.operatorType} ,</if>
+				NOW(),
+				<if test="item.createUserId != null ">#{item.createUserId},</if>
+			</trim>
+		</foreach>
+	</insert>
+	
+		<sql id="MybatisCommodityDataLogDAO_all_column_fields">
+		id,bussiness_id,schema_name,table_name,class_name,content,operator_type,create_user_id,create_time
+	</sql>
+	<!-- 只有varchar char text类型 做 !='' 判断，生成代码时,其他类型时只做!=null 决断 0或fasle与空''是相同的，在mybatis中的动态语句中 -->
+	<sql id="MybatisCommodityDataLogDAO_dynamic_where_fields"><!-- xml转义字符需要 <![CDATA[   ]]> 标签-->
+		<where>
+			<if test="tableName != null  and tableName != '' "> AND table_name=#{tableName} </if>
+			<if test="schemaName != null  and schemaName != '' "> AND schema_name=#{schemaName} </if>
+			<if test="content != null  and content != '' "> AND content=#{content} </if>
+			<if test="operatorType != null "> AND operator_type=#{operatorType} </if>
+			<if test="createUserId != null "> AND create_user_id=#{createUserId} </if>
+			<if test="bussinessId != null "> AND bussiness_id=#{bussinessId} </if>
+			<if test="className != null "> AND class_name=#{className} </if>
+		</where>
+ 	</sql>
+  
+  
+  <select id="selectDynamic" resultMap="CommodityDataLogDOResultMap" parameterType="com.taipu.commodity.log.model.vo.CommodityDataLogDO">
+	     SELECT
+	     	<include refid="MybatisCommodityDataLogDAO_all_column_fields" />
+		 FROM
+		taipu_commodity_data_log
+			<include refid="MybatisCommodityDataLogDAO_dynamic_where_fields" />
+ 	</select>
+
+ 	<select id="selectCountDynamic" resultType="long" parameterType="com.taipu.commodity.log.model.vo.CommodityDataLogDO">
+	     SELECT
+	     	count(1)
+		 FROM
+		taipu_commodity_data_log
+	 	<include refid="MybatisCommodityDataLogDAO_dynamic_where_fields" />
+ 	</select>
+
+ 	<select id="selectDynamicPageQuery" resultMap="CommodityDataLogDOResultMap" parameterType="com.taipu.commodity.log.model.vo.CommodityDataLogDO">
+	     SELECT
+	     	<include refid="MybatisCommodityDataLogDAO_all_column_fields" />
+		 FROM
+		taipu_commodity_data_log
+	 	<include refid="MybatisCommodityDataLogDAO_dynamic_where_fields" />
+	 	Limit #{start},#{pageSize}
+ 	</select>
+ 
+</mapper>
